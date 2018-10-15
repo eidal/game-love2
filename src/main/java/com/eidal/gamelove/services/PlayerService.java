@@ -6,6 +6,7 @@ import com.eidal.gamelove.repository.PlayerRepository;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -31,21 +32,20 @@ public class PlayerService {
 
     public Player createPlayer(Player player) {
         try {
-            Player playeraux= playerRepository.saveAndFlush(player);
-            return playeraux;
-        } catch (Exception e) {
+            return playerRepository.save(player);
+        } catch (Exception e){
             throw new PlayerException("Error! Problem create player");
         }
     }
 
-    public void borraPlayer(Long idPlayer) {
+    public void deletePlayer(Long idPlayer) {
         if(checkGetPlayer(idPlayer).isPresent()) {
             playerRepository.deleteById(idPlayer);
         }
 
     }
 
-    public Player getPlayerByName(String name){
+    public List<Player> getPlayerByName(String name){
         return playerRepository.findByName(name);
     }
 
@@ -54,10 +54,10 @@ public class PlayerService {
 
         try {
             BeanUtils.populate(player,datos);
+            return playerRepository.saveAndFlush(player);
         } catch (Exception e) {
             throw new PlayerException("Error! Problem update player");
         }
-        return playerRepository.saveAndFlush(player);
     }
 
     private Optional<Player> checkGetPlayer(Long id){

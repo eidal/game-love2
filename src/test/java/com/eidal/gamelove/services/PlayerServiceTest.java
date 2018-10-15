@@ -1,5 +1,6 @@
 package com.eidal.gamelove.services;
 
+import com.eidal.gamelove.exceptions.PlayerException;
 import com.eidal.gamelove.models.Player;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,20 +28,30 @@ public class PlayerServiceTest {
         Player player=new Player(nombre);
         playerService.createPlayer(player);
         Player player1=playerService.getPlayer(player.getId());
-        Player playerName=playerService.getPlayerByName(nombre);
+        List<Player> playerName=playerService.getPlayerByName(nombre);
         assertEquals(player.getId(),player1.getId());
-        assertEquals(player.getId(),playerName.getId());
+        assertTrue(playerName.size()>0);
     }
 
     @Test
-    public void updateplayerServiceTest() {
+    public void updatePlayerServiceTest() {
         String nombre="player Service 2";
         Player player=new Player(nombre);
         playerService.createPlayer(player);
         Map<String,Object> datos=new HashMap<String,Object>();
-        datos.put("name","BestPlayer00");
+        datos.put("name","player00");
         Player player2=playerService.updatePlayer(datos,player.getId());
         assertEquals(player.getId(),player2.getId());
         assertEquals(datos.get("name"),player2.getName());
+    }
+
+    @Test(expected= PlayerException.class)
+    public void deletePlayerServiceTest() {
+        String nombre="player Service 3";
+        Player player=new Player(nombre);
+        Long idPlayer = playerService.createPlayer(player).getId();
+        Player player2 = playerService.getPlayer(idPlayer);
+        playerService.deletePlayer(idPlayer);
+        player2 = playerService.getPlayer(idPlayer);
     }
 }
