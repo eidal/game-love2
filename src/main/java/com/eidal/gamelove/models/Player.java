@@ -4,7 +4,9 @@ package com.eidal.gamelove.models;
 import javax.validation.constraints.NotNull;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name="players")
@@ -16,6 +18,16 @@ public class Player {
 
     @NotNull
     String name;
+
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.MERGE
+            })
+    @JoinTable(name = "user_games",
+            joinColumns = { @JoinColumn(name = "player_id") },
+            inverseJoinColumns = { @JoinColumn(name = "game_id") })
+    private Set<Game> games = new HashSet<>();
 
     public Player(){}
 
@@ -39,6 +51,14 @@ public class Player {
         this.name = name;
     }
 
+    public Set<Game> getGames() {
+        return games;
+    }
+
+    public void setGames(Set<Game> games) {
+        this.games = games;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -57,6 +77,7 @@ public class Player {
         return "Player{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", games=" + games.toString() +
                 '}';
     }
 }
