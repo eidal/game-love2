@@ -20,7 +20,7 @@ public class Game implements Comparable<Game> {
     @Column(unique=true)
     String name;
 
-    private int numLoves;
+    int numLoves;
 
     @JsonIgnore
     @ManyToMany(mappedBy = "games",

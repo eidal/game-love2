@@ -1,5 +1,6 @@
 package com.eidal.gamelove.controllers;
 
+import com.eidal.gamelove.models.Game;
 import com.eidal.gamelove.models.Player;
 import com.eidal.gamelove.services.PlayerService;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,7 @@ public class PlayerController {
      */
     @RequestMapping(value="/{id}",method = RequestMethod.GET)
     @ResponseBody
-    public Player getJugadorId(@PathVariable("id") Long id) {
+    public Player getPlayerId(@PathVariable("id") Long id) {
         return playerService.getPlayer(id);
         }
 
@@ -41,7 +42,7 @@ public class PlayerController {
       */
     @RequestMapping(method= RequestMethod.GET)
     public List<Player> getPlayers(){
-            return playerService.getPlayers();
+        return playerService.getPlayers();
      }
 
     /**
@@ -69,5 +70,23 @@ public class PlayerController {
     @ResponseStatus(HttpStatus.OK)
     public void deletePlayer(@PathVariable("id") Long id) {
         playerService.deletePlayer(id);
+    }
+
+    /**
+     * GET - List Games loved by specific Player
+     */
+    @RequestMapping(value="/{id}/games", method=RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    public List<Game> getGamesLovePlayer(@PathVariable("id") Long id){
+        return playerService.getGamesLovePlayer(id);
+    }
+
+    /**
+     * POST - User like/unlike Game
+     */
+    @RequestMapping(value="{id}/games/{idGame}", method=RequestMethod.POST)
+    @ResponseBody
+    public Player playerLoveGame(@PathVariable("id") Long idPlayer,@PathVariable("idGame") Long idGame){
+        return playerService.playerLoveGame(idPlayer,idGame);
     }
 }

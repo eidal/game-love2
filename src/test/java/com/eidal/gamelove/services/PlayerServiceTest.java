@@ -65,7 +65,7 @@ public class PlayerServiceTest {
         Long idPlayer = playerService.createPlayer(player).getId();
         Player player2 = playerService.getPlayer(idPlayer);
         Set<Game> games = new HashSet<>();
-        Game game = new Game("game1");
+        Game game = new Game("game from Player 4");
         Game game2 = gameService.createGame(game);
         games.add(game2);
         player2.setGames(games);
@@ -80,9 +80,9 @@ public class PlayerServiceTest {
         Long idPlayer = playerService.createPlayer(player).getId();
         Player player2 = playerService.getPlayer(idPlayer);
         Set<Game> games = new HashSet<>();
-        Game game = new Game("game2");
+        Game game = new Game("game from Player 5");
         Game game2 = gameService.createGame(game);
-        player=playerService.playerLikeGame(player2.getId(),game2.getId());
+        player=playerService.playerLoveGame(player2.getId(),game2.getId());
         assertTrue(player.getGames().size()>0);
         System.out.println(player.getGames().stream().findFirst().get().toString());
         assertTrue(player.getGames().stream().findFirst().get().getNumLoves()>0);

@@ -5,15 +5,19 @@ import com.eidal.gamelove.models.Game;
 import com.eidal.gamelove.models.Player;
 import com.eidal.gamelove.repository.GameRepository;
 import org.apache.commons.beanutils.BeanUtils;
+import org.hibernate.criterion.Order;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transaction;
 import javax.transaction.Transactional;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -74,6 +78,15 @@ public class GameService {
 
     public List<Game> getGamesNumLoves(int numLoves){
         return gameRepository.findBynumLoves(numLoves);
+    }
+
+    public List<Game> getTopGames(int numGames){
+        //int limited = numGames;
+        //Pageable pageable = new PageRequest(0,limited);
+        return gameRepository.findAll().stream().sorted(Comparator.comparing(Game::getNumLoves).reversed())
+                                                                .limit(Long.valueOf(numGames))
+                                                                .collect(Collectors.toList());
+
     }
 
     private Optional<Game> checkGetGame(Long id) throws GameException{

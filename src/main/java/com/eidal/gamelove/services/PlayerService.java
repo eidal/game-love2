@@ -1,5 +1,6 @@
 package com.eidal.gamelove.services;
 
+import com.eidal.gamelove.exceptions.GameException;
 import com.eidal.gamelove.exceptions.PlayerException;
 import com.eidal.gamelove.models.Game;
 import com.eidal.gamelove.models.Player;
@@ -72,7 +73,7 @@ public class PlayerService {
         }
     }
 
-    public Player playerLikeGame(Long idPlayer, Long idGame){
+    public Player playerLoveGame(Long idPlayer, Long idGame){
         Optional<Player> player=checkGetPlayer(idPlayer);
         if(player.isPresent()){
             Optional<Game> game=gameRepository.findById(idGame);
@@ -80,9 +81,16 @@ public class PlayerService {
                 Player playerAux=player.get();
                 Set<Game> games = playerAux.getGames();
                 Game gameAux=game.get();
-                gameAux.incNumLoves();
-                gameAux=gameRepository.saveAndFlush(gameAux);
-                games.add(gameAux);
+                if (games.contains(gameAux)){
+                    gameAux.decNumLoves();
+                    gameAux=gameRepository.saveAndFlush(gameAux);
+                    games.remove(gameAux);
+                } else {
+                    gameAux.incNumLoves();
+                    gameAux=gameRepository.saveAndFlush(gameAux);
+                    games.add(gameAux);
+                }
+
                 return playerRepository.saveAndFlush(playerAux);
 
             } else {
@@ -90,6 +98,15 @@ public class PlayerService {
             }
         } else {
             throw new PlayerException("Error! The player not exist");
+        }
+    }
+
+    public List<Game> getGamesLovePlayer(Long idPlayer){
+        Optional<Player> player = checkGetPlayer(idPlayer);
+        if(player.isPresent()){
+            return (List<Game>)player.get().getGames();
+        } else{
+            throw new GameException("Error! The game not exist");
         }
     }
 

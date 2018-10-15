@@ -1,6 +1,8 @@
 package com.eidal.gamelove.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.validation.constraints.NotNull;
 
 import javax.persistence.*;
