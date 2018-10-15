@@ -15,6 +15,7 @@ public class Player {
     Long id;
 
     @NotNull
+    @Column(unique=true)
     String name;
 
     public Player(){}
