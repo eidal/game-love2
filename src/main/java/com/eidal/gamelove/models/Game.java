@@ -1,13 +1,12 @@
 package com.eidal.gamelove.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.ComparisonChain;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @Table(name="games")
@@ -23,9 +22,10 @@ public class Game implements Comparable<Game> {
 
     private int numLoves;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "games",
             cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private List<Player> players = new ArrayList<>();
+    private Set<Player> players = new HashSet<>();
 
     public Game(){}
 
@@ -60,11 +60,19 @@ public class Game implements Comparable<Game> {
     }
 
     public void incNumLoves(){
-        this.numLoves = numLoves++;
+        this.numLoves = ++numLoves;
     }
 
     public void decNumLoves(){
-        this.numLoves = numLoves>0 ? numLoves-- : 0;
+        this.numLoves = numLoves>0 ? --numLoves : 0;
+    }
+
+    public Set<Player> getPlayers() {
+        return players;
+    }
+
+    public void setPlayers(Set<Player> players) {
+        this.players = players;
     }
 
     @Override
